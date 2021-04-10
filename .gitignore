@@ -1,1 +1,6 @@
-Gcode Generator.vcxproj Gcode Generator.vcxproj.filters Gcode Generator.vcxproj.user
+*.vcxproj*
+*.dxf
+*.bak
+*.pro
+Debug/
+dxflib-3.17.0-src/
