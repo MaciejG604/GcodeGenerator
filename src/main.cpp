@@ -32,7 +32,7 @@
 #include "..\library\dl_dxf.h"
 #include "..\library\dl_creationadapter.h"
 
-#include "..\include\test_creationclass.h"
+#include "test_creationclass.h"
 
 void usage();
 void testReading(char* file);
