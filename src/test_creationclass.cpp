@@ -67,7 +67,9 @@ void Test_CreationClass::addArc(const DL_ArcData& data) {
     printf("ARC      (%6.3f, %6.3f, %6.3f) %6.3f, %6.3f, %6.3f\n",
            data.cx, data.cy, data.cz,
            data.radius, data.angle1, data.angle2);
-    printAttributes();
+	double d3[] = { 0.0, 0.0, 0.0 };
+	this->getExtrusion()->getDirection(d3);
+	printf( "Extrusion (X: %6.3f, Y: %6.3f, Z: %6.3f)\n", d3[0], d3[1], d3[2] );
 }
 
 /**
