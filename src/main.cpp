@@ -33,6 +33,7 @@
 #include "..\library\dl_creationadapter.h"
 
 #include "test_creationclass.h"
+#include "GcodeGen.h"
 
 void usage();
 void testReading(char* file);
@@ -52,10 +53,12 @@ void testWriting();
  */
 int main(int argc, char** argv) {
 
-	
+	//Custom_CreationClass creator;	//Klasa Adama
     testReading(const_cast<char*>("Test.dxf"));
 
-    testWriting();
+
+	GcodeGen generator;
+	//generator.generateCode();
 
     return 0;
 }
