@@ -10,39 +10,28 @@
 using namespace std;
 
 struct Entity {
-    virtual void setData();
-    virtual void add();
-    vector <Entity*> path;
-
+    virtual void setData() = 0;
+    virtual ~Entity() = default;
 };
 
-struct Line : Entity, DL_LineData{
+struct Line : Entity{
     DL_LineData data;
     void setData(const DL_LineData& data) {
         this->data = data;
     }
-    void add() {
-        path.push_back(this);
-    };
 };
 
 
 struct Arc : Entity {
     DL_ArcData data;
-        void setData(const DL_ArcData &data) {
-            this->data = data;
-        }
-    void add() {
-        path.push_back(this);
-    };
+    void setData(const DL_ArcData &data) {
+         this->data = data;
+    }
 };
 
 struct Circle : Entity {
-    DL_ArcData data;
-    void setData(const DL_ArcData& data) {
+    DL_CircleData data;
+    void setData(const DL_CircleData& data) {
         this->data = data;
     }
-    void add() {
-        path.push_back(this);
-    };
 };
