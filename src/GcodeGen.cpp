@@ -2,7 +2,7 @@
 
 
 
-void GcodeGen::generateCode( const std::vector<Entity*>& eVec )
+void GcodeGen::generateCode( std::vector<Entity*> eVec )
 {
 	
 }

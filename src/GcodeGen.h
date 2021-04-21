@@ -1,11 +1,7 @@
 #pragma once
 #include <vector>
 
-class Entity;
-class Line;
-class Arc;
-class Circle;
-
+#include "entity.h"
 class GcodeGen
 {
 	/*
@@ -15,7 +11,7 @@ public:
 	/*
 		Constructors and Destructors, IF NEEDED
 	*/
-	void generateCode( const std::vector<Entity*>& eVec );
+	void generateCode( std::vector<Entity*> eVec );
 
 	void startup();		//function for initial homing
 	void finish();		//function for finalizing machine's job, IF NEEDED
