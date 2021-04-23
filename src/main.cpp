@@ -56,6 +56,8 @@ int main(int argc, char** argv) {
 	//Custom_CreationClass creator;	//Klasa Adama
     testReading(const_cast<char*>("Test.dxf"));
 
+	Arc test( DL_ArcData( 0, 0, 0, 100, 0, 90 ), GeoVector(0,0,1));
+	test.makeLines();
 
 	GcodeGen generator;
 	//generator.generateCode();
