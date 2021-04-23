@@ -13,10 +13,10 @@ public:
 
 	double operator[]( size_t id );
 
-	GeoVector operator+( const GeoVector& pcOther );
+	GeoVector operator+( const GeoVector& pcOther );	//dodawanie wektorów
 
-	GeoVector operator*( const GeoVector& pcOther );
-	GeoVector operator*( const double dFactor );
+	GeoVector operator*( const GeoVector& pcOther );	//iloczyn wektorowy
+	GeoVector operator*( const double dFactor );		//mno¿enie wektor przez liczbê
 
 	void unitScale();
 
