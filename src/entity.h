@@ -1,4 +1,5 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿#pragma once
+#define _CRT_SECURE_NO_WARNINGS
 
 #include "../library/dl_global.h"
 #include "../library/dl_creationadapter.h"
@@ -7,6 +8,7 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 const double STEP_DISTANCE = 5.0; //maksymalna długość odcinków uzytych do aproksymacji
 
@@ -17,20 +19,22 @@ inline double deg_cos	( double x ) { return std::cos( ( M_PI / 180 )*x ); }
 
 using namespace std;
 
-struct Entity {
+class Entity {
+public:
     virtual ~Entity() = default;
+	virtual void makeLines() = 0;
 };
 
-class Line : Entity{
+class Line : public Entity{
 public:
 	Line( DL_LineData cData ) :data( cData ) {};
+	void makeLines() {};
 private:
     DL_LineData data;
-	
 };
 
 
-class Arc : Entity {
+class Arc : public Entity {
 public:
 	Arc( DL_ArcData arcData, GeoVector geoExtr ) : data( arcData ), extrusion( geoExtr ) {};
 
@@ -88,6 +92,10 @@ private:
 	vector<Line> line_aproxim;
 };
 
-class Circle : Entity {
+class Circle : public Entity {
+public:
+	Circle(DL_CircleData cData) :data(cData) {};
+	void makeLines() {};
+private:
     DL_CircleData data;
 };
