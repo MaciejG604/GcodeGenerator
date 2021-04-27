@@ -11,10 +11,10 @@ void creationClass::addLine(const DL_LineData& data) {
 	this->entities.push_back(std::make_shared<Line>(data));
 }
 
-void creationClass::addArc(const DL_ArcData& data, const DL_Extrusion& extrusion) {
+void creationClass::addArc(const DL_ArcData& data) {
 	double dir[3];
-	extrusion.getDirection(dir);
-	this->entities.push_back(std::make_shared<Arc>(data, GeoVector(dir[0], dir[1], dir[2])));
+	this->getExtrusion()->getDirection(dir);
+	this->entities.push_back(std::make_shared<Arc>(data, GeoVector(dir)));
 }
 
 

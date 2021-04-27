@@ -12,7 +12,7 @@ public:
 	~creationClass();
 
 	virtual void addLine(const DL_LineData& data);
-	virtual void addArc(const DL_ArcData& data,const DL_Extrusion& extrusion);
+	virtual void addArc(const DL_ArcData& data);
 	virtual void addCircle(const DL_CircleData& data);
 
 	shared_ptr<Entity> get(int id);

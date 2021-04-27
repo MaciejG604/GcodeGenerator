@@ -19,19 +19,22 @@ inline double deg_cos	( double x ) { return std::cos( ( M_PI / 180 )*x ); }
 
 using namespace std;
 
-struct Entity {
+class Entity {
+public:
     virtual ~Entity() = default;
+	virtual void makeLines() = 0;
 };
 
-struct Line : Entity{
+class Line : public Entity{
 public:
 	Line( DL_LineData cData ) :data( cData ) {};
+	void makeLines() {};
 private:
     DL_LineData data;
 };
 
 
-struct Arc : Entity {
+class Arc : public Entity {
 public:
 	Arc( DL_ArcData arcData, GeoVector geoExtr ) : data( arcData ), extrusion( geoExtr ) {};
 
@@ -89,9 +92,10 @@ private:
 	vector<Line> line_aproxim;
 };
 
-struct Circle : Entity {
+class Circle : public Entity {
 public:
 	Circle(DL_CircleData cData) :data(cData) {};
+	void makeLines() {};
 private:
     DL_CircleData data;
 };
