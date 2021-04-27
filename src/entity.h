@@ -1,4 +1,5 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿#pragma once
+#define _CRT_SECURE_NO_WARNINGS
 
 #include "../library/dl_global.h"
 #include "../library/dl_creationadapter.h"
@@ -7,6 +8,7 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 const double STEP_DISTANCE = 5.0; //maksymalna długość odcinków uzytych do aproksymacji
 
@@ -21,16 +23,15 @@ struct Entity {
     virtual ~Entity() = default;
 };
 
-class Line : Entity{
+struct Line : Entity{
 public:
 	Line( DL_LineData cData ) :data( cData ) {};
 private:
     DL_LineData data;
-	
 };
 
 
-class Arc : Entity {
+struct Arc : Entity {
 public:
 	Arc( DL_ArcData arcData, GeoVector geoExtr ) : data( arcData ), extrusion( geoExtr ) {};
 
@@ -88,6 +89,9 @@ private:
 	vector<Line> line_aproxim;
 };
 
-class Circle : Entity {
+struct Circle : Entity {
+public:
+	Circle(DL_CircleData cData) :data(cData) {};
+private:
     DL_CircleData data;
 };

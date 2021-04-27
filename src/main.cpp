@@ -31,6 +31,7 @@
 
 #include "..\library\dl_dxf.h"
 #include "..\library\dl_creationadapter.h"
+#include "creationClass.h"
 
 #include "test_creationclass.h"
 #include "GcodeGen.h"
@@ -56,10 +57,11 @@ int main(int argc, char** argv) {
 	//Custom_CreationClass creator;	//Klasa Adama
     testReading(const_cast<char*>("Test.dxf"));
 
+
 	Arc test( DL_ArcData( 0, 0, 0, 100, 0, 90 ), GeoVector(0,0,1));
 	test.makeLines();
 
-	GcodeGen generator;
+	//GcodeGen generator;
 	//generator.generateCode();
 
     return 0;
@@ -79,14 +81,18 @@ void usage() {
 void testReading(char* file) {
     // Load DXF file into memory:
     std::cout << "Reading file " << file << "...\n";
-    Test_CreationClass* creationClass = new Test_CreationClass();
+    creationClass* creation = new creationClass();
     DL_Dxf* dxf = new DL_Dxf();
-    if (!dxf->in(file, creationClass)) { // if file open failed
+    if (!dxf->in(file, creation)) { // if file open failed
         std::cerr << file << " could not be opened.\n";
         return;
     }
+	for (int i = 0; i < creation->size(); i++) {
+		std::shared_ptr<Entity> test = creation->get(i);
+		cout << test.get() << endl;
+	}
     delete dxf;
-    delete creationClass;
+    delete creation;
 }
 
 
