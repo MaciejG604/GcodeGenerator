@@ -36,8 +36,11 @@
 #include "test_creationclass.h"
 #include "GcodeGen.h"
 
+double const MIN_BEND = 5; //[mm]
+
 void usage();
-void testReading(char* file);
+void testReading( char* file );
+void Reading(creationClass& creation, char* file);
 void testWriting();
 
 
@@ -53,16 +56,29 @@ void testWriting();
  * @retval 1 if file opened
  */
 int main(int argc, char** argv) {
+	/*
+	angle_difference( 50, 350 );
+	angle_difference( 50, 40 );
+	angle_difference( 330, 30 );
+	*/
+	creationClass creation;
+	testReading( const_cast<char*>( "Drawing1.dxf" ) );
+    Reading(creation, const_cast<char*>("Drawing1.dxf"));
 
-	//Custom_CreationClass creator;	//Klasa Adama
-    testReading(const_cast<char*>("Test.dxf"));
-
-
-	Arc test( DL_ArcData( 0, 0, 0, 100, 0, 90 ), GeoVector(0,0,1));
-	test.makeLines();
-
-	//GcodeGen generator;
-	//generator.generateCode();
+	GcodeGen generator( creation.data(), MIN_BEND );
+	generator.startup();
+	try
+	{
+		generator.generate();
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+	catch (...)
+	{
+		std::cout << "EXCEPTION" << std::endl;
+	}
 
     return 0;
 }
@@ -77,22 +93,34 @@ void usage() {
     std::cout << "\nUsage: test <DXF file>\n\n";
 }
 
+void testReading( char* file ) {
+	// Load DXF file into memory:
+	std::cout << "Reading file " << file << "...\n";
+	Test_CreationClass* creation = new Test_CreationClass();
+	DL_Dxf* dxf = new DL_Dxf();
+	if (!dxf->in( file, creation )) { // if file open failed
+		std::cerr << file << " could not be opened.\n";
+		return;
+	}
+	
+	delete dxf;
+	delete creation;
+}
 
-void testReading(char* file) {
+
+void Reading(creationClass& creation, char* file) {
     // Load DXF file into memory:
     std::cout << "Reading file " << file << "...\n";
-    creationClass* creation = new creationClass();
     DL_Dxf* dxf = new DL_Dxf();
-    if (!dxf->in(file, creation)) { // if file open failed
+    if (!dxf->in(file, &creation)) { // if file open failed
         std::cerr << file << " could not be opened.\n";
         return;
     }
-	for (int i = 0; i < creation->size(); i++) {
-		std::shared_ptr<Entity> test = creation->get(i);
+	for (int i = 0; i < creation.size(); i++) {
+		std::shared_ptr<Entity> test = creation.get(i);
 		cout << test.get() << endl;
 	}
     delete dxf;
-    delete creation;
 }
 
 

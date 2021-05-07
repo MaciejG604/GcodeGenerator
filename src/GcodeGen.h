@@ -4,14 +4,14 @@
 #include "Entity.h"
 class GcodeGen
 {
-	/*
-		Machine parameters here as variables, IF NEEDED
-	*/
-	static const double MIN_BEND_DISTANCE; //[mm] minimalna d³ugoœæ odcinka jaki moze byc zagiêty - odleg³oœæ narzêdzia od g³owicy z drutem
-	vector<std::shared_ptr<Entity>> entities;
+	//Machine parameters here as variables
 
+	const double MIN_BEND_DISTANCE; //[mm] minimalna d³ugoœæ odcinka jaki moze byc zagiêty - odleg³oœæ narzêdzia od g³owicy z drutem
+	vector<std::shared_ptr<Entity>> entities;
+	GeoVector present_normal = { 0.0,0.0,0.0 };
+	double bend_plane_rotation = 0;
 public:
-	GcodeGen( vector<std::shared_ptr<Entity>> vInput ) :entities( vInput ) {};
+	GcodeGen( vector<std::shared_ptr<Entity>> vInput, double bendDistance ) :MIN_BEND_DISTANCE(bendDistance), entities( vInput ) {};
 
 	void startup();		//function for initial homing
 	void generate();

@@ -16,7 +16,7 @@ public:
 	//void addCircle(const DL_CircleData& data) override;
 
 	shared_ptr<Entity> get(int id);
-
+	vector<std::shared_ptr<Entity>> data() { return entities; };
 	int size();
 
 private:
