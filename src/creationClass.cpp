@@ -18,9 +18,11 @@ void creationClass::addArc(const DL_ArcData& data) {
 }
 
 
+/*
 void creationClass::addCircle(const DL_CircleData& data) {
 	this->entities.push_back(std::make_shared<Circle>(data));
 }
+*/
 
 
 shared_ptr<Entity> creationClass::get(int id) {

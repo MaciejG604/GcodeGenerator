@@ -15,7 +15,8 @@ const double STEP_DISTANCE = 5.0; //maksymalna długość odcinków uzytych do a
 //wrappery na funkcje przyjmujace argumenty w stopniach
 inline double deg_sin	( double x ) { return std::sin( ( M_PI / 180 )*x ); }
 inline double deg_cos	( double x ) { return std::cos( ( M_PI / 180 )*x ); }
-
+double angle_difference( double startAngle, double endAngle );
+class Line;
 
 using namespace std;
 
@@ -23,12 +24,35 @@ class Entity {
 public:
     virtual ~Entity() = default;
 	virtual void makeLines() = 0;
+	virtual void reorder( shared_ptr<Entity>) = 0;	//zmienia kolejność składowych kształtu (pozwala na porpawne zwracanie first i last)
+	virtual Line firstLine() = 0;	//zwraca odcinek początkowy kształtu
+	virtual Line lastLine() = 0;	//zwraca odcinek końcowy kształtu
+	virtual double codePath( shared_ptr<Entity>, GeoVector&) = 0; //funkcja generujaca gcode, zwraca kąt obortu płaszczyzny gięcia
 };
 
 class Line : public Entity{
 public:
 	Line( DL_LineData cData ) :data( cData ) {};
-	void makeLines() {};
+	void makeLines() override {};
+
+	void reorder( shared_ptr<Entity> pcPrevious ) override;
+	Line firstLine() override { return *this; };
+	Line lastLine() override { return *this; };
+	double codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal) override;
+
+	//zwraca wektor styczny do odcinka
+	GeoVector tangentVector() const;
+
+	//zwraca true jeśli obiekt pcOther ma punkt końcowy lub początkowy wspólny z this
+	bool operator^( const Line& pcOther ) const;
+	
+	//zwraca parę wektorów stycznych do obu prostych, zaczepionych w punkcie wspólnym prostych - [wektor z this, wektor z pcPrevious]
+	pair<GeoVector, GeoVector> intersectionVectors( const Line& pcPrevious ) const;
+
+	//zwraca wartość kąta pomiędzy odcinkami w stopniach
+	double interAngleDeg( const Line& pcOther) const;
+	
+	inline double length() const;
 private:
     DL_LineData data;
 };
@@ -38,64 +62,29 @@ class Arc : public Entity {
 public:
 	Arc( DL_ArcData arcData, GeoVector geoExtr ) : data( arcData ), extrusion( geoExtr ) {};
 
-	void makeLines()
-	{
-		GeoVector Ax;
-		GeoVector Ay;
-		//Wyznaczenie osi okładu lokalnego dla łuku, patrz Arbitrary Axis Algorithm (DXF)
-		if (( abs( extrusion[0] ) < (1.0 / 64.0) ) && ( abs( extrusion[1] ) < (1.0 / 64.0) ))
-		{
-			//Ax = Wy X N ( where “X” is the cross - product operator )
-			Ax = GeoVector( 0, 1, 0 )*extrusion;
-		}
-		else
-		{
-			//Ax = Wz X N ( where “X” is the cross - product operator )
-			Ax = GeoVector( 0, 0, 1 )*extrusion;
-			
-		}
-		//Scale Ax to unit length.
-		Ax.unitScale();
-		//Ay = N X Ax and Scale Ay to unit length
-		Ay = extrusion * Ax;
-		Ay.unitScale();
+	void makeLines() override;
+	void reorder( shared_ptr<Entity> pcPrevious ) override;
+	double codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal ) override;
 
-		//z twierdzenia cosinusów
-		const double STEP_ANGLE = ( 180 / M_PI ) * acos( 1 - ( STEP_DISTANCE * STEP_DISTANCE ) / ( 2 * data.radius * data.radius ) );
-
-		GeoVector start;
-
-		{
-			double x_start = data.radius * deg_cos( data.angle1 );
-			double y_start = data.radius * deg_sin( data.angle1 );
-			start = GeoVector( data.cx, data.cy, data.cz ) + Ax * x_start + Ay * y_start;
-		}
-
-		while (abs( data.angle2 - data.angle1 ) > STEP_ANGLE)
-		{
-			//współrzędne  początku i konca odcinka aproksymujacego czesc łuku, w lokalnym, płaskim układzie wspolrz
-			data.angle1 += STEP_ANGLE;
-			if (data.angle1 > 360)
-				data.angle1 -= 360;
-			double x_end = data.radius * deg_cos( data.angle1 );
-			double y_end = data.radius * deg_sin( data.angle1 );
-			GeoVector end = GeoVector( data.cx, data.cy, data.cz ) + Ax * x_end + Ay * y_end;
-
-			line_aproxim.push_back( Line( GeoVector::makeLineData( start, end ) ) );
-			start = end;
-		}
-	}
-
+	Line firstLine() override { return *line_aproxim.front(); };
+	Line lastLine() override { return *line_aproxim.back(); };
+	
 private:
 	DL_ArcData data;
 	GeoVector extrusion; //wektor normalny do płaszczyzny łuku
-	vector<Line> line_aproxim;
+	vector<shared_ptr<Line>> line_aproxim;
 };
 
+/*
+TODO:
 class Circle : public Entity {
 public:
 	Circle(DL_CircleData cData) :data(cData) {};
-	void makeLines() {};
+	void makeLines() override {};
+	void reorder( shared_ptr<Entity> pcPrevious, shared_ptr<Entity> pcNext ) override {};
+	Line firstLine() override { return line_aproxim.front(); };
+	Line lastLine() override { return line_aproxim.back(); };
 private:
     DL_CircleData data;
 };
+*/
