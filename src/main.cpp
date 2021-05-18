@@ -56,11 +56,7 @@ void testWriting();
  * @retval 1 if file opened
  */
 int main(int argc, char** argv) {
-	/*
-	angle_difference( 50, 350 );
-	angle_difference( 50, 40 );
-	angle_difference( 330, 30 );
-	*/
+	
 	creationClass creation;
 	testReading( const_cast<char*>( "Drawing1.dxf" ) );
     Reading(creation, const_cast<char*>("Drawing1.dxf"));

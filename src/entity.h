@@ -23,7 +23,7 @@ using namespace std;
 class Entity {
 public:
     virtual ~Entity() = default;
-	virtual void makeLines() = 0;
+	virtual void makeLines() = 0;	//tworzy aproksymacje danego obiektu odcinkami
 	virtual void reorder( shared_ptr<Entity>) = 0;	//zmienia kolejność składowych kształtu (pozwala na porpawne zwracanie first i last)
 	virtual Line firstLine() = 0;	//zwraca odcinek początkowy kształtu
 	virtual Line lastLine() = 0;	//zwraca odcinek końcowy kształtu

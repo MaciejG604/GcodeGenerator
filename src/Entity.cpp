@@ -55,32 +55,6 @@ pair<GeoVector, GeoVector> Line::intersectionVectors( const Line& pcPrevious ) c
 	GeoVector intersection;
 	GeoVector end_this;
 	GeoVector end_prev;
-	/*
-	if (abs(data.x2 - pcPrevious.data.x1) < 1.e-6 && abs(data.y2 - pcPrevious.data.y1) < 1.e-6 && abs(data.z2 - pcPrevious.data.z1) < 1.e-6)		//pkt 2 <-> pkt 1 - przypadek występujacy dla line_aproxim w Arc
-	{
-		intersection = a2;	//też b1
-		end_this = a1;
-		end_prev = b2;
-	}
-	else if (abs(data.x1 - pcPrevious.data.x2) < 1.e-6 && abs(data.y1 - pcPrevious.data.y2) < 1.e-6 && abs(data.z1 - pcPrevious.data.z2) < 1.e-6)	//pkt 1 <-> pkt 2
-	{
-		intersection = a1;	//też b2
-		end_this = a2;
-		end_prev = b1;
-	}
-	else if (abs(data.x2 - pcPrevious.data.x1) < 1.e-6 && abs(data.y2 - pcPrevious.data.y1) < 1.e-6 && abs(data.z2 - pcPrevious.data.z1) < 1.e-6)	//pkt 2 <-> pkt 2
-	{
-		intersection = a2;	//też b2
-		end_this = a1;
-		end_prev = b1;
-	}
-	else if (abs(data.x1 - pcPrevious.data.x1) < 1.e-6 && abs(data.y1 - pcPrevious.data.y1) < 1.e-6 && abs(data.z1 - pcPrevious.data.z1) < 1.e-6)	//pkt 1 <-> pkt 1
-	{
-		intersection = a1;	//też b1
-		end_this = a2;
-		end_prev = b2;
-	}
-	*/
 
 	if (a2 == b1)		//pkt 2 <-> pkt 1 - przypadek występujacy dla line_aproxim w Arc
 	{
