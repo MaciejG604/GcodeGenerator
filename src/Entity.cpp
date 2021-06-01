@@ -143,10 +143,10 @@ double Line::codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal )
 				{
 					std::cout << "Obrot plaszczyzny w lewo o " << plane_rotation << " stopni" << std::endl;
 					plane_rotation = -plane_rotation;
-					gvNormal = new_normal;
 				}
 				else //( direction < 0.0 ) kąt skierowany w prawo
 					std::cout << "Obrot plaszczyzny w prawo o " << plane_rotation << " stopni" << std::endl;
+				gvNormal = new_normal;
 			}
 
 			//zgięcie drutu w lewo
