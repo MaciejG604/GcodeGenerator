@@ -218,8 +218,8 @@ void Arc::makeLines()
 
 void Arc::reorder( shared_ptr<Entity> pcPrevious)
 {
-	if(pcPrevious != nullptr && !(pcPrevious->lastLine() ^ this->firstLine()) )
-		std::reverse(line_aproxim.begin(), line_aproxim.end());
+	//if(pcPrevious != nullptr && !(pcPrevious->lastLine() ^ this->firstLine()) )
+		//std::reverse(line_aproxim.begin(), line_aproxim.end());
 	//ADDITIONAL - obsługa niejednoznaczności (pcPrev.lastline ma punkt wspólny z this->firstLine i jednocześnie z lastLine)
 	//przy okazji sprawdzanie ciągłości ścieżki
 }
@@ -235,3 +235,6 @@ double Arc::codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal )
 
 	return plane_rotation;
 }
+
+Line Arc::firstLine(){ return *line_aproxim.front(); };
+Line Arc::lastLine(){ return *line_aproxim.back(); };

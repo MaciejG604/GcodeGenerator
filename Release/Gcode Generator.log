@@ -1,0 +1,13 @@
+﻿  dl_dxf.cpp
+c:\users\mac_g\desktop\maciek\programowanie\c++\gcode generator\gcode generator\library\dl_dxf.cpp(3536): warning C4244: "argument": konwersja z "double" do "int", możliwa utrata danych
+  dl_writer_ascii.cpp
+  creationClass.cpp
+  Entity.cpp
+  GcodeGen.cpp
+  GeoVector.cpp
+  main.cpp
+  test_creationclass.cpp
+  Trwa generowanie kodu
+  All 1190 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Zakończono generowanie kodu
+  Gcode Generator.vcxproj -> C:\Users\mac_g\Desktop\Maciek\Programowanie\C++\Gcode Generator\Release\Gcode Generator.exe

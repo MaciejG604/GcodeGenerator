@@ -58,8 +58,9 @@ void testWriting();
 int main(int argc, char** argv) {
 	
 	creationClass creation;
-	testReading( const_cast<char*>( "Drawing1.dxf" ) );
-    Reading(creation, const_cast<char*>("Drawing1.dxf"));
+	//testReading( const_cast<char*>( "Drawing1.dxf" ) );
+    //Reading(creation, const_cast<char*>("Drawing2.dxf"));
+	Reading( creation, argv[1] );
 
 	GcodeGen generator( creation.data(), MIN_BEND );
 	generator.startup();
@@ -91,7 +92,7 @@ void usage() {
 
 void testReading( char* file ) {
 	// Load DXF file into memory:
-	std::cout << "Reading file " << file << "...\n";
+	//std::cout << "Reading file " << file << "...\n";
 	Test_CreationClass* creation = new Test_CreationClass();
 	DL_Dxf* dxf = new DL_Dxf();
 	if (!dxf->in( file, creation )) { // if file open failed
@@ -106,16 +107,12 @@ void testReading( char* file ) {
 
 void Reading(creationClass& creation, char* file) {
     // Load DXF file into memory:
-    std::cout << "Reading file " << file << "...\n";
+    //std::cout << "Reading file " << file << "...\n";
     DL_Dxf* dxf = new DL_Dxf();
     if (!dxf->in(file, &creation)) { // if file open failed
         std::cerr << file << " could not be opened.\n";
         return;
     }
-	for (int i = 0; i < creation.size(); i++) {
-		std::shared_ptr<Entity> test = creation.get(i);
-		cout << test.get() << endl;
-	}
     delete dxf;
 }
 

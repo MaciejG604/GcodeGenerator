@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 
-const double STEP_DISTANCE = 5.0; //maksymalna długość odcinków uzytych do aproksymacji
+const double STEP_DISTANCE = 10.0; //maksymalna długość odcinków uzytych do aproksymacji
 
 //wrappery na funkcje przyjmujace argumenty w stopniach
 inline double deg_sin	( double x ) { return std::sin( ( M_PI / 180 )*x ); }
@@ -66,8 +66,8 @@ public:
 	void reorder( shared_ptr<Entity> pcPrevious ) override;
 	double codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal ) override;
 
-	Line firstLine() override { return *line_aproxim.front(); };
-	Line lastLine() override { return *line_aproxim.back(); };
+	Line firstLine() override;
+	Line lastLine() override;
 	
 private:
 	DL_ArcData data;
