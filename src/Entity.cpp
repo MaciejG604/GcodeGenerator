@@ -1,4 +1,5 @@
-﻿#include "Entity.h"
+﻿#include <iomanip>
+#include "Entity.h"
 
 double angle_difference( double startAngle, double endAngle )
 {
@@ -105,11 +106,15 @@ double Line::interAngleDeg( const Line& pcOther) const
 	return 180 - angle_result;
 }
 
-double Line::codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal )
+double Line::codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal, const double bending_factor )
 {
 	double plane_rotation = 0;
-	//TODO Gcode
-	std::cout << "Wysun drut na " << length() << " mm" << std::endl;
+	//promienie do obliczania odcinka z kąta
+	double radiusY = 2;
+	double radiusZ = 2;
+	//odcinek o który trzeba przesunąć alby uzyskać oczekiwany kąt
+	double segment = 0;
+	double second_side = 5 / 180 * M_PI * radiusZ; //zmiana strony 5 stopni
 
 	if (pcPrevious != nullptr)
 	{	
@@ -125,14 +130,46 @@ double Line::codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal )
 		{
 			gvNormal = new_normal;
 			//zgięcie drutu w lewo
-			std::cout << "Zegnij drut o " << 180 - tang_this.interAngleDeg( tang_previous ) << " stopni" << std::endl;
+			//std::cout << "Zegnij drut o " << 180 - tang_this.interAngleDeg( tang_previous ) << " stopni" << std::endl;
+			//Zmienione na Gcod
+			segment = 180 - tang_this.interAngleDeg( tang_previous );
+			segment = (segment + bending_factor) / 180 * M_PI * radiusZ;
+			std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z" << segment << std::endl;
+			//powrót
+			std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z-" << segment << std::endl;
 		}
 		else if (new_normal.areParallel( gvNormal, &direction ))
 		{	
-			if (direction < 0.0)	//zgięcie drutu w prawo
-				std::cout << "Zegnij drut o -" << 180 - tang_this.interAngleDeg( tang_previous ) << " stopni" << std::endl;
-			else	//zgięcie drutu w lewo
-				std::cout << "Zegnij drut o " << 180 - tang_this.interAngleDeg( tang_previous ) << " stopni" << std::endl;
+			if (direction < 0.0) {	//zgięcie drutu w prawo
+				//std::cout << "Zegnij drut o -" << 180 - tang_this.interAngleDeg(tang_previous) << " stopni" << std::endl;
+				//Zmienione na Gcod
+				//std::cout << "Schowaj narzedzie do giecia" << std::endl;
+				std::cout << "M3 S61" << std::endl;
+				//std::cout << "Przejdz na druga strone" << std::endl;
+				std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z" << second_side << std::endl;
+				//std::cout << "Wysun narzedzie go giecia" << std::endl;
+				std::cout << "M3 S122" << std::endl;
+				segment = 180 - tang_this.interAngleDeg( tang_previous );
+				segment = (segment + bending_factor) / 180 * M_PI * radiusZ * bending_factor;
+				std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z-" << segment << std::endl;
+				//powrót
+				std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z" << segment << std::endl;
+				//std::cout << "Schowaj narzedzie do giecia" << std::endl;
+				std::cout << "M3 S61" << std::endl;
+				//std::cout << "Przejdz na druga strone" << std::endl;
+				std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z-" << second_side << std::endl;
+				//std::cout << "Wysun narzedzie go giecia" << std::endl;
+				std::cout << "M3 S122" << std::endl;
+			}
+			else {	//zgięcie drutu w lewo
+				//std::cout << "Zegnij drut o " << 180 - tang_this.interAngleDeg(tang_previous) << " stopni" << std::endl;
+				//Zmienione na Gcod
+				segment = 180 - tang_this.interAngleDeg( tang_previous );
+				segment = (segment + bending_factor) / 180 * M_PI * radiusZ * bending_factor;
+				std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z" << segment << std::endl;
+				//powrót
+				std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z-" << segment << std::endl;
+			}
 		}
 		else
 		{
@@ -141,18 +178,42 @@ double Line::codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal )
 				plane_rotation = gvNormal.interAngleDeg( new_normal );
 				if (direction > 0.0)//kąt skierowany w lewo
 				{
-					std::cout << "Obrot plaszczyzny w lewo o " << plane_rotation << " stopni" << std::endl;
+					//std::cout << "Obrot plaszczyzny w lewo o " << plane_rotation << " stopni" << std::endl;
+					//Zmienione na Gcod
+					segment = plane_rotation;
+					segment = segment / 180 * M_PI * radiusY;
+					std::cout << std::fixed << std::setprecision( 2 ) << "G1 Y" << segment << std::endl;
 					plane_rotation = -plane_rotation;
+					gvNormal = new_normal;
+
 				}
-				else //( direction < 0.0 ) kąt skierowany w prawo
-					std::cout << "Obrot plaszczyzny w prawo o " << plane_rotation << " stopni" << std::endl;
+				else {//( direction < 0.0 ) kąt skierowany w prawo
+					//std::cout << "Obrot plaszczyzny w prawo o " << plane_rotation << " stopni" << std::endl;
+					//Zmienione na Gcod
+					segment = plane_rotation;
+					segment = segment / 180 * M_PI * radiusY;
+					std::cout << std::fixed << std::setprecision( 2 ) << "G1 Y-" << segment << std::endl;
+				}
+
 				gvNormal = new_normal;
 			}
 
 			//zgięcie drutu w lewo
-			std::cout << "Zegnij drut o " << 180 - tang_this.interAngleDeg( tang_previous ) << " stopni" << std::endl;
+			//std::cout << "Zegnij drut o " << 180 - tang_this.interAngleDeg( tang_previous ) << " stopni" << std::endl;
+			//Zmienione na Gcod
+			segment = 180 - tang_this.interAngleDeg( tang_previous );
+			segment = (segment + bending_factor) / 180 * M_PI * radiusZ * bending_factor;
+			std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z" << segment << std::endl;
+			//powrót
+			std::cout << std::fixed << std::setprecision( 2 ) << "G1 Z-" << segment << std::endl;
 		}
 	}
+	
+	//TODO Gcode
+	//std::cout << "Wysun drut na " << length() << " mm" << std::endl;
+	//zmienione na Gcode
+	std::cout << std::fixed << std::setprecision( 2 ) << "G1 X" << length() << std::endl;
+
 	return plane_rotation;
 }
 
@@ -224,14 +285,14 @@ void Arc::reorder( shared_ptr<Entity> pcPrevious)
 	//przy okazji sprawdzanie ciągłości ścieżki
 }
 
-double Arc::codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal )
+double Arc::codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal, const double bending_factor )
 {
 	double plane_rotation = 0;
-	plane_rotation += line_aproxim.front()->codePath( pcPrevious, gvNormal);
+	plane_rotation += line_aproxim.front()->codePath( pcPrevious, gvNormal, bending_factor);
 
 	unsigned int i;
 	for ( i = 1; i < line_aproxim.size(); ++i)
-		plane_rotation += line_aproxim[i]->codePath( line_aproxim[i-1], gvNormal );
+		plane_rotation += line_aproxim[i]->codePath( line_aproxim[i-1], gvNormal, bending_factor );
 
 	return plane_rotation;
 }

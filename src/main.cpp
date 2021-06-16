@@ -25,6 +25,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
+#include <cstdlib>
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory>
@@ -35,6 +36,7 @@
 
 #include "test_creationclass.h"
 #include "GcodeGen.h"
+#include "Entity.h"
 
 double const MIN_BEND = 5; //[mm]
 
@@ -60,9 +62,10 @@ int main(int argc, char** argv) {
 	creationClass creation;
 	//testReading( const_cast<char*>( "Drawing1.dxf" ) );
     //Reading(creation, const_cast<char*>("Drawing2.dxf"));
+	double bending_factor = atof( argv[2] );
 	Reading( creation, argv[1] );
 
-	GcodeGen generator( creation.data(), MIN_BEND );
+	GcodeGen generator( creation.data(), MIN_BEND, bending_factor );
 	generator.startup();
 	try
 	{
@@ -76,6 +79,8 @@ int main(int argc, char** argv) {
 	{
 		std::cout << "EXCEPTION" << std::endl;
 	}
+
+	generator.finish();
 
     return 0;
 }
