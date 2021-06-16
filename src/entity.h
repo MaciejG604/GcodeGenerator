@@ -10,7 +10,8 @@
 #include <vector>
 #include <iostream>
 
-const double STEP_DISTANCE = 5.0; //maksymalna długość odcinków uzytych do aproksymacji
+const double STEP_DISTANCE = 10.0; //maksymalna długość odcinków uzytych do aproksymacji
+extern double bending_factor; //dodatkowy kąt zgięcia w stopniach
 
 //wrappery na funkcje przyjmujace argumenty w stopniach
 inline double deg_sin	( double x ) { return std::sin( ( M_PI / 180 )*x ); }
@@ -27,7 +28,7 @@ public:
 	virtual void reorder( shared_ptr<Entity>) = 0;	//zmienia kolejność składowych kształtu (pozwala na porpawne zwracanie first i last)
 	virtual Line firstLine() = 0;	//zwraca odcinek początkowy kształtu
 	virtual Line lastLine() = 0;	//zwraca odcinek końcowy kształtu
-	virtual double codePath( shared_ptr<Entity>, GeoVector&) = 0; //funkcja generujaca gcode, zwraca kąt obortu płaszczyzny gięcia
+	virtual double codePath( shared_ptr<Entity>, GeoVector&, const double) = 0; //funkcja generujaca gcode, zwraca kąt obortu płaszczyzny gięcia
 };
 
 class Line : public Entity{
@@ -38,7 +39,7 @@ public:
 	void reorder( shared_ptr<Entity> pcPrevious ) override;
 	Line firstLine() override { return *this; };
 	Line lastLine() override { return *this; };
-	double codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal) override;
+	double codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal, const double bending_factor) override;
 
 	//zwraca wektor styczny do odcinka
 	GeoVector tangentVector() const;
@@ -64,10 +65,10 @@ public:
 
 	void makeLines() override;
 	void reorder( shared_ptr<Entity> pcPrevious ) override;
-	double codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal ) override;
+	double codePath( shared_ptr<Entity> pcPrevious, GeoVector& gvNormal, const double bending_factor ) override;
 
-	Line firstLine() override { return *line_aproxim.front(); };
-	Line lastLine() override { return *line_aproxim.back(); };
+	Line firstLine() override;
+	Line lastLine() override;
 	
 private:
 	DL_ArcData data;

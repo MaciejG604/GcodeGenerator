@@ -25,6 +25,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
+#include <cstdlib>
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory>
@@ -35,6 +36,7 @@
 
 #include "test_creationclass.h"
 #include "GcodeGen.h"
+#include "Entity.h"
 
 double const MIN_BEND = 5; //[mm]
 
@@ -58,10 +60,12 @@ void testWriting();
 int main(int argc, char** argv) {
 	
 	creationClass creation;
-	testReading( const_cast<char*>( "Drawing1.dxf" ) );
-    Reading(creation, const_cast<char*>("Drawing1.dxf"));
+	//testReading( const_cast<char*>( "Drawing1.dxf" ) );
+    //Reading(creation, const_cast<char*>("Drawing2.dxf"));
+	double bending_factor = atof( argv[2] );
+	Reading( creation, argv[1] );
 
-	GcodeGen generator( creation.data(), MIN_BEND );
+	GcodeGen generator( creation.data(), MIN_BEND, bending_factor );
 	generator.startup();
 	try
 	{
@@ -75,6 +79,8 @@ int main(int argc, char** argv) {
 	{
 		std::cout << "EXCEPTION" << std::endl;
 	}
+
+	generator.finish();
 
     return 0;
 }
@@ -91,7 +97,7 @@ void usage() {
 
 void testReading( char* file ) {
 	// Load DXF file into memory:
-	std::cout << "Reading file " << file << "...\n";
+	//std::cout << "Reading file " << file << "...\n";
 	Test_CreationClass* creation = new Test_CreationClass();
 	DL_Dxf* dxf = new DL_Dxf();
 	if (!dxf->in( file, creation )) { // if file open failed
@@ -106,16 +112,12 @@ void testReading( char* file ) {
 
 void Reading(creationClass& creation, char* file) {
     // Load DXF file into memory:
-    std::cout << "Reading file " << file << "...\n";
+    //std::cout << "Reading file " << file << "...\n";
     DL_Dxf* dxf = new DL_Dxf();
     if (!dxf->in(file, &creation)) { // if file open failed
         std::cerr << file << " could not be opened.\n";
         return;
     }
-	for (int i = 0; i < creation.size(); i++) {
-		std::shared_ptr<Entity> test = creation.get(i);
-		cout << test.get() << endl;
-	}
     delete dxf;
 }
 

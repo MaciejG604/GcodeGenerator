@@ -1,6 +1,9 @@
 *.vcxproj*
 *.dxf
+*.dwl
+*.dwl2
 *.bak
 *.pro
 Debug/
+Release/
 dxflib-3.17.0-src/
